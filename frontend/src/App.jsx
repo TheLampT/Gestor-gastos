@@ -5,8 +5,7 @@ import {
 } from "recharts";
 import { getStyles } from "./styles";
 
-//const API = "https://gestor-gastos-eqbt.onrender.com/api";
-const API = "http://localhost:3001/api";
+const API = "https://gestor-gastos-eqbt.onrender.com/api";
 
 const CATEGORIAS_GASTO = ["Comida", "Transporte", "Entretenimiento", "Salud", "Indumentaria", "Educación", "Alquiler", "Servicios", "Inversion", "Otros"];
 const CATEGORIAS_INGRESO = ["Sueldo", "Freelance", "Inversión", "Regalo", "Otros"];
