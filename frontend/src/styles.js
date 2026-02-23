@@ -1,4 +1,4 @@
-export const styles = {
+const styles = {
   app: { minHeight: "100vh", background: "var(--bg)" },
   header: { borderBottom: "1px solid var(--border)", background: "var(--surface)", position: "sticky", top: 0, zIndex: 100 },
   headerInner: { maxWidth: 960, margin: "0 auto", padding: "16px 24px", display: "flex", alignItems: "center", justifyContent: "space-between" },
@@ -7,8 +7,9 @@ export const styles = {
   subtitle: { fontSize: 11, color: "var(--text-muted)", letterSpacing: 2, marginTop: 2 },
   headerActions: { display: "flex", gap: 12, alignItems: "center" },
   monthInput: { background: "var(--surface2)", border: "1px solid var(--border)", color: "var(--text)", padding: "8px 12px", borderRadius: "var(--radius)", fontSize: 13 },
-  btnAccent: { background: "transparent", border: "1px solid var(--accent)", color: "var(--accent)", padding: "8px 18px", borderRadius: "var(--radius)", fontSize: 13, letterSpacing: 1, transition: "all 0.2s" },
+  btnAccent: { background: "transparent", border: "1px solid var(--accent)", color: "var(--accent)", padding: "8px 18px", borderRadius: "var(--radius)", fontSize: 13, letterSpacing: 1 },
   btnAccentActive: { background: "var(--accent)", border: "1px solid var(--accent)", color: "#000", padding: "8px 18px", borderRadius: "var(--radius)", fontSize: 13, fontWeight: 700, letterSpacing: 1 },
+  btnLogout: { background: "transparent", border: "1px solid var(--border)", color: "var(--text-muted)", padding: "8px 14px", borderRadius: "var(--radius)", fontSize: 12, letterSpacing: 1 },
   main: { maxWidth: 960, margin: "0 auto", padding: "32px 24px" },
   cards: { display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 16, marginBottom: 32 },
   card: { background: "var(--surface)", border: "1px solid", borderRadius: "var(--radius)", padding: "24px 20px" },
@@ -24,15 +25,23 @@ export const styles = {
   listHeader: { display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 },
   filterSelect: { background: "var(--surface2)", border: "1px solid var(--border)", color: "var(--text)", padding: "6px 12px", borderRadius: "var(--radius)", fontSize: 12 },
   list: { display: "flex", flexDirection: "column", gap: 8 },
-  txItem: { display: "flex", alignItems: "center", gap: 12, padding: "12px 16px", background: "var(--surface2)", borderRadius: "var(--radius)", transition: "opacity 0.2s" },
+  txItem: { display: "flex", alignItems: "center", gap: 12, padding: "12px 16px", background: "var(--surface2)", borderRadius: "var(--radius)" },
   txType: { width: 32, height: 32, borderRadius: "var(--radius)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16, fontWeight: 700, flexShrink: 0 },
   txInfo: { flex: 1 },
   txDesc: { fontSize: 14, fontWeight: 700, marginBottom: 2 },
   txMeta: { fontSize: 11, color: "var(--text-muted)", letterSpacing: 1 },
   txMonto: { fontFamily: "var(--font-display)", fontSize: 16, fontWeight: 700 },
-  btnDelete: { background: "transparent", border: "none", color: "var(--text-muted)", fontSize: 20, padding: "0 4px", lineHeight: 1, transition: "color 0.2s" },
+  btnDelete: { background: "transparent", border: "none", color: "var(--text-muted)", fontSize: 20, padding: "0 4px", lineHeight: 1 },
   empty: { textAlign: "center", padding: "40px 0", color: "var(--text-muted)", lineHeight: 2, fontSize: 14 },
-  // Formulario
+  // Auth
+  authBg: { minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "var(--bg)" },
+  authCard: { background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "var(--radius)", padding: "40px", width: "100%", maxWidth: 420 },
+  authLogo: { fontFamily: "var(--font-display)", fontSize: 28, fontWeight: 800, letterSpacing: 4, textAlign: "center", marginBottom: 4 },
+  authSubtitle: { fontSize: 11, color: "var(--text-muted)", letterSpacing: 2, textAlign: "center", marginBottom: 32 },
+  authToggle: { display: "flex", marginBottom: 24, border: "1px solid var(--border)", borderRadius: "var(--radius)", overflow: "hidden" },
+  authTab: { flex: 1, padding: "10px", background: "transparent", border: "none", color: "var(--text-muted)", fontSize: 13, letterSpacing: 1 },
+  authTabActive: { flex: 1, padding: "10px", background: "var(--accent)", border: "none", color: "#000", fontSize: 13, fontWeight: 700, letterSpacing: 1 },
+  // Form
   formContainer: { maxWidth: 520, margin: "0 auto" },
   sectionTitle: { fontFamily: "var(--font-display)", fontSize: 24, fontWeight: 800, letterSpacing: 2, marginBottom: 28 },
   errorBox: { background: "#ff4d6d22", border: "1px solid #ff4d6d", color: "#ff4d6d", padding: "12px 16px", borderRadius: "var(--radius)", marginBottom: 20, fontSize: 13 },
