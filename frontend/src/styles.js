@@ -1,4 +1,4 @@
-const styles = {
+export const styles = {
   app: { minHeight: "100vh", background: "var(--bg)" },
   header: { borderBottom: "1px solid var(--border)", background: "var(--surface)", position: "sticky", top: 0, zIndex: 100 },
   headerInner: { maxWidth: 960, margin: "0 auto", padding: "16px 24px", display: "flex", alignItems: "center", justifyContent: "space-between" },

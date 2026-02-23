@@ -3,6 +3,7 @@ import {
   PieChart, Pie, Cell, Tooltip, ResponsiveContainer,
   BarChart, Bar, XAxis, YAxis, CartesianGrid,
 } from "recharts";
+import { styles } from "./styles";
 
 const API = "https://gestor-gastos-eqbt.onrender.com/api";
 
