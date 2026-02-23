@@ -3,7 +3,7 @@ import {
   PieChart, Pie, Cell, Tooltip, ResponsiveContainer,
   BarChart, Bar, XAxis, YAxis, CartesianGrid,
 } from "recharts";
-import { styles } from "./styles";
+import { getStyles } from "./styles";
 
 //const API = "https://gestor-gastos-eqbt.onrender.com/api";
 const API = "http://localhost:3001/api";
@@ -27,6 +27,8 @@ function AuthScreen({ onLogin }) {
   const [form, setForm] = useState({ username: "", password: "" });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const isMobile = window.innerWidth < 640;
+  const styles = getStyles(isMobile);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -117,6 +119,9 @@ export default function App() {
     fecha: new Date().toISOString().split("T")[0],
   });
   const [error, setError] = useState("");
+
+  const isMobile = window.innerWidth < 640;   
+  const styles = getStyles(isMobile);
 
   const token = localStorage.getItem("token");
 
