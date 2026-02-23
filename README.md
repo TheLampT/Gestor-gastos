@@ -1,14 +1,14 @@
-# 💸 Gestor de Gastos Personales
+# Gestor de Gastos Personales
 
 App fullstack para gestionar ingresos y gastos personales. Construida con React, Node.js/Express y SQLite.
 
-## 🚀 Tecnologías
+## Tecnologías
 
 - **Frontend**: React + Recharts + Vite
 - **Backend**: Node.js + Express + better-sqlite3
 - **Base de datos**: SQLite (archivo local, sin configuración extra)
 
-## 📦 Instalación
+##  Instalación
 
 ### 1. Clonar el repo
 
@@ -37,7 +37,7 @@ npm run dev
 
 La app corre en `http://localhost:5173`
 
-## ✨ Funcionalidades
+## Funcionalidades
 
 - Registrar ingresos y gastos con categoría, descripción y fecha
 - Ver balance, total de ingresos y total de gastos del mes
@@ -46,34 +46,14 @@ La app corre en `http://localhost:5173`
 - Gráfico de barras con top categorías
 - Eliminar transacciones
 
-## 📁 Estructura del proyecto
 
-```
-gestor-gastos/
-├── backend/
-│   ├── server.js       # API REST con Express
-│   ├── gastos.db       # Base de datos SQLite (se crea automáticamente)
-│   └── package.json
-└── frontend/
-    ├── src/
-    │   ├── App.jsx     # Componente principal
-    │   ├── main.jsx    # Entry point
-    │   └── index.css   # Estilos globales
-    ├── index.html
-    ├── vite.config.js
-    └── package.json
-```
-
-## 🌐 Deploy
+## Deploy
 
 - **Frontend**: [Vercel](https://vercel.com) — conectá tu repo de GitHub y listo
 - **Backend**: [Render](https://render.com) — servicio gratuito para Node.js
 
 ## API Endpoints
-
-| Método | Ruta | Descripción |
-|--------|------|-------------|
-| GET | `/api/transacciones` | Obtener transacciones (soporta filtros `?mes=&categoria=`) |
-| GET | `/api/resumen` | Obtener balance y estadísticas del mes |
-| POST | `/api/transacciones` | Crear nueva transacción |
-| DELETE | `/api/transacciones/:id` | Eliminar transacción |
+GET `/api/transacciones`  Obtener transacciones (soporta filtros `?mes=&categoria=`) 
+GET  `/api/resumen`  Obtener balance y estadísticas del mes 
+POST  `/api/transacciones`  Crear nueva transacción 
+DELETE  `/api/transacciones/:id`  Eliminar transacción 
