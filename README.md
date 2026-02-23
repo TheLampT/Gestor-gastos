@@ -1,4 +1,4 @@
-# 💸 Gestor de Gastos Personales
+# Gestor de Gastos Personales
 
 ![React](https://img.shields.io/badge/React-18-61DAFB?style=flat&logo=react)
 ![Node.js](https://img.shields.io/badge/Node.js-Express-339933?style=flat&logo=node.js)
