@@ -13,7 +13,7 @@ import {
   CartesianGrid,
 } from "recharts";
 
-const API = "/api";
+const API = "https://gestor-gastos-eqbt.onrender.com/api";
 
 const CATEGORIAS_GASTO = [
   "Comida",
