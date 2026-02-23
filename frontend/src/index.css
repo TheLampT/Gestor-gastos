@@ -45,3 +45,8 @@ input, select {
   background: var(--border);
   border-radius: 3px;
 }
+
+input[type="month"]::-webkit-calendar-picker-indicator {
+  filter: invert(1);   
+  opacity: 0.8;
+}
