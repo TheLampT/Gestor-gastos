@@ -20,7 +20,7 @@ const getMesActual = () => {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
 };
 
-// ─── AUTH SCREEN ────────────────────────────────────────────────────────────
+// AUTH SCREEN
 function AuthScreen({ onLogin }) {
   const [modo, setModo] = useState("login"); 
   const [form, setForm] = useState({ username: "", password: "" });
@@ -104,7 +104,7 @@ function AuthScreen({ onLogin }) {
   );
 }
 
-// ─── MAIN APP ────────────────────────────────────────────────────────────────
+// MAIN APP 
 export default function App() {
   const [username, setUsername] = useState(() => localStorage.getItem("username"));
   const [transacciones, setTransacciones] = useState([]);
