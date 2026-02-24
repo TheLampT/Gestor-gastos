@@ -1,59 +1,78 @@
 # Gestor de Gastos Personales
 
-App fullstack para gestionar ingresos y gastos personales. Construida con React, Node.js/Express y SQLite.
+![React](https://img.shields.io/badge/React-18-61DAFB?style=flat&logo=react)
+![Node.js](https://img.shields.io/badge/Node.js-Express-339933?style=flat&logo=node.js)
+![JWT](https://img.shields.io/badge/Auth-JWT-000000?style=flat&logo=jsonwebtokens)
+![Vercel](https://img.shields.io/badge/Deploy-Vercel-000000?style=flat&logo=vercel)
+![License](https://img.shields.io/badge/License-MIT-green?style=flat)
 
-## Tecnologías
+App fullstack para registrar y visualizar ingresos y gastos personales. Cada usuario tiene su propia cuenta con datos aislados y seguros.
 
-- **Frontend**: React + Recharts + Vite
-- **Backend**: Node.js + Express + better-sqlite3
-- **Base de datos**: SQLite (archivo local, sin configuración extra)
+**Demo en vivo**: [gestor-gastos-iota.vercel.app](https://gestor-gastos-iota.vercel.app)
 
-##  Instalación
+---
 
-### 1. Clonar el repo
+## Vista previa
 
-```bash
-git clone <tu-repo>
-cd gestor-gastos
-```
+<img width="836" height="924" alt="image" src="https://github.com/user-attachments/assets/d5fc2ead-57f7-43b0-814d-db58a0534456" />
+<img width="966" height="658" alt="image" src="https://github.com/user-attachments/assets/e98b8a5d-84f8-4894-aa05-ecb492da95a2" />
+<img width="680" height="626" alt="image" src="https://github.com/user-attachments/assets/85d95cd4-95a9-4d80-94c3-4dbcd57615a5" />
 
-### 2. Instalar y correr el backend
 
-```bash
-cd backend
-npm install
-npm run dev
-```
 
-El servidor corre en `http://localhost:3001`
-
-### 3. Instalar y correr el frontend (nueva terminal)
-
-```bash
-cd frontend
-npm install
-npm run dev
-```
-
-La app corre en `http://localhost:5173`
+---
 
 ## Funcionalidades
 
+- Registro e inicio de sesión con autenticación JWT
 - Registrar ingresos y gastos con categoría, descripción y fecha
-- Ver balance, total de ingresos y total de gastos del mes
+- Gráfico de torta por categoría y ranking de top gastos
 - Filtrar transacciones por mes y categoría
-- Gráfico de torta con distribución de gastos por categoría
-- Gráfico de barras con top categorías
+- Balance, ingresos y gastos totales del mes
 - Eliminar transacciones
+- Diseño responsive (mobile y desktop)
 
+---
 
-## Deploy
+##  Tecnologías
+Frontend: React 18, Vite, Recharts 
+Backend:  Node.js, Express 
+Base de datos:  SQLite (sql.js) 
+Autenticación:  JWT + bcrypt 
+Deploy:  Vercel + Render 
 
-- **Frontend**: [Vercel](https://vercel.com) — conectá tu repo de GitHub y listo
-- **Backend**: [Render](https://render.com) — servicio gratuito para Node.js
+---
 
 ## API Endpoints
-GET `/api/transacciones`  Obtener transacciones (soporta filtros `?mes=&categoria=`) 
-GET  `/api/resumen`  Obtener balance y estadísticas del mes 
-POST  `/api/transacciones`  Crear nueva transacción 
-DELETE  `/api/transacciones/:id`  Eliminar transacción 
+
+POST | `/api/auth/registro` Crear cuenta 
+POST | `/api/auth/login`  Iniciar sesión 
+GET | `/api/transacciones`  Listar transacciones del usuario 
+GET | `/api/resumen`  Balance y estadísticas del mes 
+POST | `/api/transacciones`  Crear transacción 
+DELETE | `/api/transacciones/:id`  Eliminar transacción 
+
+---
+
+## Estructura del proyecto
+
+```
+Gestor-gastos/
+├── backend/
+│   ├── server.js       # API REST + autenticación JWT
+│   └── package.json
+└── frontend/
+    ├── src/
+    │   ├── App.jsx     # Componente principal
+    │   ├── styles.js   # Estilos responsive
+    │   ├── main.jsx    # Entry point
+    │   └── index.css   # Variables CSS globales
+    ├── index.html
+    ├── vite.config.js
+    └── package.json
+```
+
+
+## Licencia
+
+Este proyecto está bajo la licencia [MIT](https://choosealicense.com/licenses/mit/).
