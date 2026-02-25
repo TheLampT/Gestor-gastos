@@ -118,9 +118,17 @@ export default function App() {
     fecha: new Date().toISOString().split("T")[0],
   });
   const [error, setError] = useState("");
+  const [darkMode, setDarkMode] = useState(() => {
+    return localStorage.getItem("darkMode") === "true";
+  });
 
   const isMobile = window.innerWidth < 640;   
   const styles = getStyles(isMobile);
+
+  useEffect(() => {
+    document.documentElement.classList.toggle("dark", darkMode);
+    localStorage.setItem("darkMode", darkMode);
+  }, [darkMode]);
 
   const token = localStorage.getItem("token");
 
@@ -201,6 +209,7 @@ export default function App() {
               {vista === "nueva" ? "← Volver" : "+ Nueva"}
             </button>
             <button style={styles.btnLogout} onClick={handleLogout}>Salir</button>
+            <button style={styles.btnToggle} onClick={() => setDarkMode(!darkMode)}>{darkMode ? "☀️" : "🌙"}</button>
           </div>
         </div>
       </header>

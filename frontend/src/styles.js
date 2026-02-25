@@ -373,4 +373,15 @@ export const getStyles = (isMobile) => ({
     letterSpacing: 1,
     marginTop: 8,
   },
+
+  btnToggle: {
+  background: "transparent",
+  border: "1px solid var(--border)",
+  color: "var(--text-muted)",
+  padding: isMobile ? "6px 10px" : "8px 12px",
+  borderRadius: "var(--radius)",
+  fontSize: 16,
+  lineHeight: 1,
+},
 });
+
