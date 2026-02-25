@@ -13,7 +13,7 @@ const COLORS = ["#c1121f","#f77f00","#fcbf49","#7209b7","#3a0ca3","#4361ee","#4c
 const CATEGORY_COLORS = {Comida: "#ff7b00",Transporte: "#3a86ff",Entretenimiento: "#f15bb5", Salud: "#e63946",Indumentaria: "#9b5de5",Educación: "#4361ee",Alquiler: "#f4a261",Servicios: "#7209b7",Inversion: "#4cc9f0",Otros: "#adb5bd"};
 
 const formatMonto = (n) =>
-  new Intl.NumberFormat("es-AR", { style: "currency", currency: "ARS", maximumFractionDigits: 0 }).format(n);
+  new Intl.NumberFormat("es-AR", { style: "currency", currency: "ARS", minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(n);
 
 const getMesActual = () => {
   const d = new Date();
@@ -193,7 +193,7 @@ export default function App() {
         <div style={styles.headerInner}>
           <div>
             <div style={{...styles.logo, cursor: "pointer"}} onClick={() => setVista("dashboard")}><span style={styles.logoAccent}>$</span> GASTOS</div>
-            <div style={styles.subtitle}>Hola, {username}</div>
+            <div style={styles.subtitle}>Hola {username}</div>
           </div>
           <div style={styles.headerActions}>
             <input type="month" value={mes} onChange={(e) => setMes(e.target.value)} style={styles.monthInput} />

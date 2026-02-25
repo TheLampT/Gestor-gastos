@@ -73,8 +73,8 @@ export const getStyles = (isMobile) => ({
   },
   btnLogout: {
     background: "transparent",
-    border: "1px solid var(--border)",
-    color: "var(--text-muted)",
+    border: "1px solid #ff4d6d",
+    color: "#ff4d6d",
     padding: isMobile ? "6px 10px" : "8px 14px",
     borderRadius: "var(--radius)",
     fontSize: 12,

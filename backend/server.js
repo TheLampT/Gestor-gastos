@@ -124,21 +124,27 @@ app.get("/api/resumen", authMiddleware, async (req, res) => {
     let whereClause = "WHERE usuario_id = ?";
     if (mes) { whereClause += " AND strftime('%Y-%m', fecha) = ?"; args.push(mes); }
 
-    const resumen = await db.execute({
-      sql: `SELECT 
-        COALESCE(SUM(CASE WHEN tipo = 'ingreso' THEN monto ELSE 0 END), 0) as total_ingresos,
-        COALESCE(SUM(CASE WHEN tipo = 'gasto' THEN monto ELSE 0 END), 0) as total_gastos,
-        COALESCE(SUM(CASE WHEN tipo = 'ingreso' THEN monto ELSE -monto END), 0) as balance
-      FROM transacciones ${whereClause}`,
-      args
-    });
+      const balanceAcumulado = await db.execute({
+    sql: `SELECT 
+      COALESCE(SUM(CASE WHEN tipo = 'ingreso' THEN monto ELSE -monto END), 0) as balance
+    FROM transacciones WHERE usuario_id = ?${mes ? " AND strftime('%Y-%m', fecha) <= ?" : ""}`,
+    args: mes ? [req.userId, mes] : [req.userId]
+  });
+
+  const resumen = await db.execute({
+    sql: `SELECT 
+      COALESCE(SUM(CASE WHEN tipo = 'ingreso' THEN monto ELSE 0 END), 0) as total_ingresos,
+      COALESCE(SUM(CASE WHEN tipo = 'gasto' THEN monto ELSE 0 END), 0) as total_gastos
+    FROM transacciones ${whereClause}`,
+    args
+  });
 
     const porCategoria = await db.execute({
       sql: `SELECT categoria, tipo, SUM(monto) as total FROM transacciones ${whereClause} GROUP BY categoria, tipo ORDER BY total DESC`,
       args
     });
 
-    res.json({ ...resumen.rows[0], porCategoria: porCategoria.rows });
+    res.json({ ...resumen.rows[0], balance: balanceAcumulado.rows[0].balance,porCategoria: porCategoria.rows });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
