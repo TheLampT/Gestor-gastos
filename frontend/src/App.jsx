@@ -230,7 +230,7 @@ export default function App() {
               <div style={styles.row}>
                 <div style={{ ...styles.fieldGroup, flex: 1 }}>
                   <label style={styles.label}>Monto (ARS)</label>
-                  <input style={styles.input} type="number" min="1" step="0.01" value={form.monto} onChange={(e) => setForm({ ...form, monto: e.target.value })} placeholder="0.00" required />
+                  <input style={styles.input} type="number" inputMode="decimal" min="1" step="0.01" value={form.monto} onChange={(e) => setForm({ ...form, monto: e.target.value })} placeholder="0.00" required />
                 </div>
                 <div style={{ ...styles.fieldGroup, flex: 1 }}>
                   <label style={styles.label}>Fecha</label>
