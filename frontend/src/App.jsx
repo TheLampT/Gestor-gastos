@@ -118,15 +118,17 @@ export default function App() {
     fecha: new Date().toISOString().split("T")[0],
   });
   const [error, setError] = useState("");
+  
   const [darkMode, setDarkMode] = useState(() => {
-    return localStorage.getItem("darkMode") === "true";
-  });
+    const saved = localStorage.getItem("darkMode");
+    return saved !== null ? saved === "true" : true;
+});
 
   const isMobile = window.innerWidth < 640;   
   const styles = getStyles(isMobile);
 
   useEffect(() => {
-    document.documentElement.classList.toggle("dark", darkMode);
+    document.documentElement.classList.toggle("light", !darkMode);
     localStorage.setItem("darkMode", darkMode);
   }, [darkMode]);
 
