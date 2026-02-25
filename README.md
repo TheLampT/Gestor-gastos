@@ -37,7 +37,7 @@ App fullstack para registrar y visualizar ingresos y gastos personales. Cada usu
 ##  Tecnologías
 Frontend: React 18, Vite, Recharts 
 Backend:  Node.js, Express 
-Base de datos:  SQLite (sql.js) 
+Base de datos:  Turso (SQLite en la nube) 
 Autenticación:  JWT + bcrypt 
 Deploy:  Vercel + Render 
 
