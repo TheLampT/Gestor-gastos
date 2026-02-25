@@ -289,7 +289,7 @@ export default function App() {
                   <ResponsiveContainer width="100%" height={220}>
                     <BarChart data={barData} layout="vertical" margin={{ left: 10 }}>
                       <CartesianGrid strokeDasharray="3 3" stroke="#2a2a3d" horizontal={false} />
-                      <XAxis type="number" tick={{ fill: "#8888aa", fontSize: 10, fontFamily: "Space Mono" }} tickFormatter={(v) => `$${(v / 1000).toFixed(0)}k`} />
+                      <XAxis type="number" tick={{ fill: "#8888aa", fontSize: 10, fontFamily: "Space Mono" }} tickFormatter={(v) => v >= 1000000 ? `$${(v / 1000000).toFixed(1)}M` : `$${(v / 1000).toFixed(0)}k`} />
                       <YAxis type="category" dataKey="name" tick={{ fill: "#8888aa", fontSize: 10, fontFamily: "Space Mono" }} width={80} />
                       <Tooltip formatter={(v, name) => [formatMonto(v), name.charAt(0).toUpperCase() + name.slice(1)]} contentStyle={{ background: "#12121a", border: "1px solid #2a2a3d", fontFamily: "Space Mono", fontSize: 12 }} itemStyle={{ color: "white" }} />
                       <Bar dataKey="monto" radius={[0, 2, 2, 0]}>
