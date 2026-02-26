@@ -207,3 +207,59 @@ app.get("/api/comparativa", authMiddleware, async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
+
+// GET - Comparativa detalle por categoría entre dos meses
+
+app.get("/api/comparativa-detalle", authMiddleware, async (req, res) => {
+  try {
+    const { mes } = req.query;
+    
+    // Calcular mes anterior
+    const [anio, m] = mes.split("-").map(Number);
+    const mesAnteriorDate = new Date(anio, m - 2, 1);
+    const mesAnterior = `${mesAnteriorDate.getFullYear()}-${String(mesAnteriorDate.getMonth() + 1).padStart(2, "0")}`;
+
+    // Traer datos de ambos meses por categoría
+    const actual = await db.execute({
+      sql: `SELECT categoria, tipo, SUM(monto) as total FROM transacciones 
+            WHERE usuario_id = ? AND strftime('%Y-%m', fecha) = ?
+            GROUP BY categoria, tipo`,
+      args: [req.userId, mes]
+    });
+
+    const anterior = await db.execute({
+      sql: `SELECT categoria, tipo, SUM(monto) as total FROM transacciones 
+            WHERE usuario_id = ? AND strftime('%Y-%m', fecha) = ?
+            GROUP BY categoria, tipo`,
+      args: [req.userId, mesAnterior]
+    });
+
+    // Totales generales
+    const totalActual = await db.execute({
+      sql: `SELECT 
+        COALESCE(SUM(CASE WHEN tipo = 'gasto' THEN monto ELSE 0 END), 0) as gastos,
+        COALESCE(SUM(CASE WHEN tipo = 'ingreso' THEN monto ELSE 0 END), 0) as ingresos
+        FROM transacciones WHERE usuario_id = ? AND strftime('%Y-%m', fecha) = ?`,
+      args: [req.userId, mes]
+    });
+
+    const totalAnterior = await db.execute({
+      sql: `SELECT 
+        COALESCE(SUM(CASE WHEN tipo = 'gasto' THEN monto ELSE 0 END), 0) as gastos,
+        COALESCE(SUM(CASE WHEN tipo = 'ingreso' THEN monto ELSE 0 END), 0) as ingresos
+        FROM transacciones WHERE usuario_id = ? AND strftime('%Y-%m', fecha) = ?`,
+      args: [req.userId, mesAnterior]
+    });
+
+    res.json({
+      mesActual: mes,
+      mesAnterior,
+      actual: actual.rows,
+      anterior: anterior.rows,
+      totalActual: totalActual.rows[0],
+      totalAnterior: totalAnterior.rows[0],
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
