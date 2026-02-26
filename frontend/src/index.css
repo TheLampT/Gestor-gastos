@@ -49,6 +49,11 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   filter: invert(1);
 }
 
+:root.light input[type="month"]::-webkit-calendar-picker-indicator,
+:root.light input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(0);
+}
+
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: var(--surface); }
 ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
