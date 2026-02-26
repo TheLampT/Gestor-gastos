@@ -284,33 +284,6 @@ export default function App() {
           </div>
         ) : (
           <>
-          {comparativa.length > 1 && (
-              <div style={{ ...styles.chartBox, marginBottom: isMobile ? 16 : 32 }}>
-                <h3 style={styles.chartTitle}>Comparativa últimos 12 meses</h3>
-                <ResponsiveContainer width="100%" height={260}>
-                  <BarChart data={comparativa} margin={{ left: 10 }}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
-                    <XAxis 
-                      dataKey="mes" 
-                      tick={{ fill: "var(--text-muted)", fontSize: 10, fontFamily: "Space Mono" }}
-                      tickFormatter={(v) => v.slice(5)} 
-                    />
-                    <YAxis 
-                      tick={{ fill: "var(--text-muted)", fontSize: 10, fontFamily: "Space Mono" }}
-                      tickFormatter={(v) => v >= 1000000 ? `$${(v/1000000).toFixed(1)}M` : `$${(v/1000).toFixed(0)}k`}
-                    />
-                    <Tooltip 
-                      formatter={(v) => formatMonto(v)}
-                      contentStyle={{ background: "var(--surface)", border: "1px solid var(--border)", fontFamily: "Space Mono", fontSize: 12 }}
-                      itemStyle={{ color: "var(--text)" }}
-                    />
-                    <Legend wrapperStyle={{ fontFamily: "Space Mono", fontSize: 11 }} />
-                    <Bar dataKey="ingresos" name="Ingresos" fill="#00e5a0" radius={[2, 2, 0, 0]} />
-                    <Bar dataKey="gastos" name="Gastos" fill="#ff4d6d" radius={[2, 2, 0, 0]} />
-                  </BarChart>
-                </ResponsiveContainer>
-              </div>
-            )}
             <div style={styles.cards}>
               <div style={{ ...styles.card, borderColor: resumen.balance >= 0 ? "#00e5a0" : "#ff4d6d" }}>
                 <div style={styles.cardLabel}>Balance</div>
