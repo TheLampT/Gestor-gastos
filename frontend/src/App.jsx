@@ -113,6 +113,7 @@ export default function App() {
   const [filtroCategoria, setFiltroCategoria] = useState("todas");
   const [vista, setVista] = useState("dashboard");
   const [comparativa, setComparativa] = useState([]);
+  const [comparativaDetalle, setComparativaDetalle] = useState(null);
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({
     descripcion: "", monto: "", tipo: "gasto", categoria: "Comida",
@@ -149,15 +150,17 @@ export default function App() {
     const params = new URLSearchParams({ mes });
     if (filtroCategoria !== "todas") params.append("categoria", filtroCategoria);
 
-    const [txRes, resRes, compRes] = await Promise.all([
+    const [txRes, resRes, compRes, compDetalleRes] = await Promise.all([
       authFetch(`${API}/transacciones?${params}`),
       authFetch(`${API}/resumen?mes=${mes}`),
       authFetch(`${API}/comparativa`),
+      authFetch(`${API}/comparativa-detalle?mes=${mes}`),
     ]);
-    const [tx, res, comp] = await Promise.all([txRes.json(), resRes.json(), compRes.json()]);
+    const [tx, res, comp, compDetalle] = await Promise.all([txRes.json(), resRes.json(), compRes.json(), compDetalleRes.json()]);
     setTransacciones(tx);
     setResumen(res);
     setComparativa(comp);
+    setComparativaDetalle(compDetalle);
   } catch (e) {
     console.error(e);
   } finally {
@@ -262,26 +265,72 @@ export default function App() {
             </form>
           </div>
         ) : vista === "comparativa" ? (
-          <div style={styles.formContainer}>
-            <h2 style={styles.sectionTitle}>Comparativa últimos 12 meses</h2>
-            {comparativa.length <= 1 ? (
-              <div style={styles.empty}>Necesitás al menos 2 meses de datos para ver la comparativa.</div>
-            ) : (
-              <div style={styles.chartBox}>
-                <ResponsiveContainer width="100%" height={320}>
-                  <BarChart data={comparativa} margin={{ left: 10 }}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
-                    <XAxis dataKey="mes" tick={{ fill: "var(--text-muted)", fontSize: 10, fontFamily: "Space Mono" }} tickFormatter={(v) => v.slice(5)} />
-                    <YAxis tick={{ fill: "var(--text-muted)", fontSize: 10, fontFamily: "Space Mono" }} tickFormatter={(v) => v >= 1000000 ? `$${(v/1000000).toFixed(1)}M` : `$${(v/1000).toFixed(0)}k`} />
-                    <Tooltip formatter={(v) => formatMonto(v)} contentStyle={{ background: "var(--surface)", border: "1px solid var(--border)", fontFamily: "Space Mono", fontSize: 12 }} itemStyle={{ color: "var(--text)" }} />
-                    <Legend wrapperStyle={{ fontFamily: "Space Mono", fontSize: 11 }} />
-                    <Bar dataKey="ingresos" name="Ingresos" fill="#00e5a0" radius={[2, 2, 0, 0]} />
-                    <Bar dataKey="gastos" name="Gastos" fill="#ff4d6d" radius={[2, 2, 0, 0]} />
-                  </BarChart>
-                </ResponsiveContainer>
+  <div style={{ maxWidth: 720, margin: "0 auto" }}>
+    <h2 style={styles.sectionTitle}>Comparativa con el mes anterior</h2>
+    {!comparativaDetalle || comparativaDetalle.totalAnterior?.gastos === 0 ? (
+      <div style={styles.empty}>No hay datos del mes anterior para comparar.</div>
+    ) : (
+      <>
+        {/* Resumen general */}
+        <div style={{ ...styles.chartBox, marginBottom: 16 }}>
+          <h3 style={styles.chartTitle}>Resumen general</h3>
+          {(() => {
+            const gastosActual = Number(comparativaDetalle.totalActual?.gastos || 0);
+            const gastosAnterior = Number(comparativaDetalle.totalAnterior?.gastos || 0);
+            const diff = gastosAnterior > 0 ? ((gastosActual - gastosAnterior) / gastosAnterior) * 100 : 0;
+            const mejoro = diff < 0;
+            return (
+              <div style={{ fontSize: 15, lineHeight: 2 }}>
+                <span>Este mes gastaste </span>
+                <span style={{ color: mejoro ? "#00e5a0" : "#ff4d6d", fontWeight: 700 }}>
+                  {Math.abs(diff).toFixed(1)}% {mejoro ? "menos" : "más"}
+                </span>
+                <span> que el mes anterior.</span>
+                <div style={{ fontSize: 12, color: "var(--text-muted)", marginTop: 4 }}>
+                  {comparativaDetalle.mesAnterior}: {formatMonto(gastosAnterior)} → {comparativaDetalle.mesActual}: {formatMonto(gastosActual)}
+                </div>
               </div>
-            )}
+            );
+          })()}
+        </div>
+
+        {/* Por categoría */}
+        <div style={styles.chartBox}>
+          <h3 style={styles.chartTitle}>Por categoría</h3>
+          <div style={{ display: "flex", flexDirection: "column", gap: 12, marginTop: 8 }}>
+            {(() => {
+              const actualMap = {};
+              const anteriorMap = {};
+              comparativaDetalle.actual.filter(r => r.tipo === "gasto").forEach(r => actualMap[r.categoria] = Number(r.total));
+              comparativaDetalle.anterior.filter(r => r.tipo === "gasto").forEach(r => anteriorMap[r.categoria] = Number(r.total));
+              const categorias = [...new Set([...Object.keys(actualMap), ...Object.keys(anteriorMap)])];
+              
+              return categorias.map((cat) => {
+                const actual = actualMap[cat] || 0;
+                const anterior = anteriorMap[cat] || 0;
+                const diff = anterior > 0 ? ((actual - anterior) / anterior) * 100 : null;
+                const mejoro = diff !== null && diff < 0;
+
+                return (
+                  <div key={cat} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 14px", background: "var(--surface2)", borderRadius: "var(--radius)" }}>
+                    <div>
+                      <div style={{ fontSize: 13, fontWeight: 700 }}>{cat}</div>
+                      <div style={{ fontSize: 11, color: "var(--text-muted)" }}>
+                        {formatMonto(anterior)} → {formatMonto(actual)}
+                      </div>
+                    </div>
+                    <div style={{ color: diff === null ? "var(--text-muted)" : mejoro ? "#00e5a0" : "#ff4d6d", fontWeight: 700, fontSize: 13 }}>
+                      {diff === null ? "Nuevo" : `${mejoro ? "▼" : "▲"} ${Math.abs(diff).toFixed(1)}%`}
+                    </div>
+                  </div>
+                );
+              });
+            })()}
           </div>
+        </div>
+      </>
+    )}
+  </div>
         ) : (
           <>
             <div style={styles.cards}>
