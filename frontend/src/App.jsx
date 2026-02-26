@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import {
   PieChart, Pie, Cell, Tooltip, ResponsiveContainer,
-  BarChart, Bar, XAxis, YAxis, CartesianGrid,
+  BarChart, Bar, XAxis, YAxis, CartesianGrid, Legend,
 } from "recharts";
 import { getStyles } from "./styles";
 
@@ -13,7 +13,7 @@ const COLORS = ["#c1121f","#f77f00","#fcbf49","#7209b7","#3a0ca3","#4361ee","#4c
 const CATEGORY_COLORS = {Comida: "#ff7b00",Transporte: "#3a86ff",Entretenimiento: "#f15bb5", Salud: "#e63946",Indumentaria: "#9b5de5",Educación: "#4361ee",Alquiler: "#f4a261",Servicios: "#7209b7",Inversion: "#4cc9f0",Otros: "#adb5bd"};
 
 const formatMonto = (n) =>
-  new Intl.NumberFormat("es-AR", { style: "currency", currency: "ARS", minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(n);
+  new Intl.NumberFormat("es-AR", { style: "currency", currency: "ARS", minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n);
 
 const getMesActual = () => {
   const d = new Date();
@@ -112,13 +112,14 @@ export default function App() {
   const [mes, setMes] = useState(getMesActual());
   const [filtroCategoria, setFiltroCategoria] = useState("todas");
   const [vista, setVista] = useState("dashboard");
+  const [comparativa, setComparativa] = useState([]);
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({
     descripcion: "", monto: "", tipo: "gasto", categoria: "Comida",
     fecha: new Date().toISOString().split("T")[0],
   });
   const [error, setError] = useState("");
-  
+
   const [darkMode, setDarkMode] = useState(() => {
     const saved = localStorage.getItem("darkMode");
     return saved !== null ? saved === "true" : true;
@@ -142,25 +143,27 @@ export default function App() {
   }, [token]);
 
   const fetchData = useCallback(async () => {
-    if (!token) return;
-    setLoading(true);
-    try {
-      const params = new URLSearchParams({ mes });
-      if (filtroCategoria !== "todas") params.append("categoria", filtroCategoria);
+  if (!token) return;
+  setLoading(true);
+  try {
+    const params = new URLSearchParams({ mes });
+    if (filtroCategoria !== "todas") params.append("categoria", filtroCategoria);
 
-      const [txRes, resRes] = await Promise.all([
-        authFetch(`${API}/transacciones?${params}`),
-        authFetch(`${API}/resumen?mes=${mes}`),
-      ]);
-      const [tx, res] = await Promise.all([txRes.json(), resRes.json()]);
-      setTransacciones(tx);
-      setResumen(res);
-    } catch (e) {
-      console.error(e);
-    } finally {
-      setLoading(false);
-    }
-  }, [mes, filtroCategoria, token, authFetch]);
+    const [txRes, resRes, compRes] = await Promise.all([
+      authFetch(`${API}/transacciones?${params}`),
+      authFetch(`${API}/resumen?mes=${mes}`),
+      authFetch(`${API}/comparativa`),
+    ]);
+    const [tx, res, comp] = await Promise.all([txRes.json(), resRes.json(), compRes.json()]);
+    setTransacciones(tx);
+    setResumen(res);
+    setComparativa(comp);
+  } catch (e) {
+    console.error(e);
+  } finally {
+    setLoading(false);
+  }
+}, [mes, filtroCategoria, token, authFetch]);
 
   useEffect(() => { fetchData(); }, [fetchData]);
 
@@ -210,6 +213,7 @@ export default function App() {
             <button style={vista === "nueva" ? styles.btnAccentActive : styles.btnAccent} onClick={() => setVista(vista === "nueva" ? "dashboard" : "nueva")}>
               {vista === "nueva" ? "← Volver" : "+ Nueva"}
             </button>
+            <button style={vista === "comparativa" ? styles.btnAccentActive : styles.btnAccent} onClick={() => setVista(vista === "comparativa" ? "dashboard" : "comparativa")}>Comparativa</button>
             <button style={styles.btnLogout} onClick={handleLogout}>Salir</button>
             <button style={styles.btnToggle} onClick={() => setDarkMode(!darkMode)}>{darkMode ? "☀️" : "🌙"}</button>
           </div>
@@ -257,8 +261,56 @@ export default function App() {
               <button style={styles.btnSubmit} type="submit">Guardar transacción →</button>
             </form>
           </div>
+        ) : vista === "comparativa" ? (
+          <div style={styles.formContainer}>
+            <h2 style={styles.sectionTitle}>Comparativa últimos 12 meses</h2>
+            {comparativa.length <= 1 ? (
+              <div style={styles.empty}>Necesitás al menos 2 meses de datos para ver la comparativa.</div>
+            ) : (
+              <div style={styles.chartBox}>
+                <ResponsiveContainer width="100%" height={320}>
+                  <BarChart data={comparativa} margin={{ left: 10 }}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
+                    <XAxis dataKey="mes" tick={{ fill: "var(--text-muted)", fontSize: 10, fontFamily: "Space Mono" }} tickFormatter={(v) => v.slice(5)} />
+                    <YAxis tick={{ fill: "var(--text-muted)", fontSize: 10, fontFamily: "Space Mono" }} tickFormatter={(v) => v >= 1000000 ? `$${(v/1000000).toFixed(1)}M` : `$${(v/1000).toFixed(0)}k`} />
+                    <Tooltip formatter={(v) => formatMonto(v)} contentStyle={{ background: "var(--surface)", border: "1px solid var(--border)", fontFamily: "Space Mono", fontSize: 12 }} itemStyle={{ color: "var(--text)" }} />
+                    <Legend wrapperStyle={{ fontFamily: "Space Mono", fontSize: 11 }} />
+                    <Bar dataKey="ingresos" name="Ingresos" fill="#00e5a0" radius={[2, 2, 0, 0]} />
+                    <Bar dataKey="gastos" name="Gastos" fill="#ff4d6d" radius={[2, 2, 0, 0]} />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            )}
+          </div>
         ) : (
           <>
+          {comparativa.length > 1 && (
+              <div style={{ ...styles.chartBox, marginBottom: isMobile ? 16 : 32 }}>
+                <h3 style={styles.chartTitle}>Comparativa últimos 12 meses</h3>
+                <ResponsiveContainer width="100%" height={260}>
+                  <BarChart data={comparativa} margin={{ left: 10 }}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
+                    <XAxis 
+                      dataKey="mes" 
+                      tick={{ fill: "var(--text-muted)", fontSize: 10, fontFamily: "Space Mono" }}
+                      tickFormatter={(v) => v.slice(5)} 
+                    />
+                    <YAxis 
+                      tick={{ fill: "var(--text-muted)", fontSize: 10, fontFamily: "Space Mono" }}
+                      tickFormatter={(v) => v >= 1000000 ? `$${(v/1000000).toFixed(1)}M` : `$${(v/1000).toFixed(0)}k`}
+                    />
+                    <Tooltip 
+                      formatter={(v) => formatMonto(v)}
+                      contentStyle={{ background: "var(--surface)", border: "1px solid var(--border)", fontFamily: "Space Mono", fontSize: 12 }}
+                      itemStyle={{ color: "var(--text)" }}
+                    />
+                    <Legend wrapperStyle={{ fontFamily: "Space Mono", fontSize: 11 }} />
+                    <Bar dataKey="ingresos" name="Ingresos" fill="#00e5a0" radius={[2, 2, 0, 0]} />
+                    <Bar dataKey="gastos" name="Gastos" fill="#ff4d6d" radius={[2, 2, 0, 0]} />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            )}
             <div style={styles.cards}>
               <div style={{ ...styles.card, borderColor: resumen.balance >= 0 ? "#00e5a0" : "#ff4d6d" }}>
                 <div style={styles.cardLabel}>Balance</div>

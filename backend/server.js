@@ -185,3 +185,25 @@ app.delete("/api/transacciones/:id", authMiddleware, async (req, res) => {
 initDB().then(() => {
   app.listen(PORT, () => console.log(`🚀 Servidor corriendo en http://localhost:${PORT}`));
 });
+
+// GET - Comparativa últimos 12 meses
+
+app.get("/api/comparativa", authMiddleware, async (req, res) => {
+  try {
+    const result = await db.execute({
+      sql: `SELECT 
+        strftime('%Y-%m', fecha) as mes,
+        COALESCE(SUM(CASE WHEN tipo = 'ingreso' THEN monto ELSE 0 END), 0) as ingresos,
+        COALESCE(SUM(CASE WHEN tipo = 'gasto' THEN monto ELSE 0 END), 0) as gastos
+      FROM transacciones 
+      WHERE usuario_id = ? 
+        AND fecha >= date('now', '-12 months')
+      GROUP BY strftime('%Y-%m', fecha)
+      ORDER BY mes ASC`,
+      args: [req.userId]
+    });
+    res.json(result.rows);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
