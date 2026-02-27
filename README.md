@@ -17,6 +17,8 @@ App fullstack para registrar y visualizar ingresos y gastos personales. Cada usu
 <img width="836" height="924" alt="image" src="https://github.com/user-attachments/assets/d5fc2ead-57f7-43b0-814d-db58a0534456" />
 <img width="966" height="658" alt="image" src="https://github.com/user-attachments/assets/e98b8a5d-84f8-4894-aa05-ecb492da95a2" />
 <img width="680" height="626" alt="image" src="https://github.com/user-attachments/assets/85d95cd4-95a9-4d80-94c3-4dbcd57615a5" />
+<img width="1041" height="638" alt="image" src="https://github.com/user-attachments/assets/806bee65-8713-4523-b0c6-6332830daa63" />
+
 
 
 
